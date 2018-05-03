@@ -61,6 +61,7 @@ public class IntakeCube extends Command {
 		Robot.intakeEject.stopIntake();
 		Robot.stopIntake = false;
 		if (Robot.robot.isAutonomous()) {
+			Scheduler.getInstance().add(new ToggleIntake());
 			Scheduler.getInstance().add(new LiftToPosition(Robot.lift, LiftHeight.SWITCH));
 		}
 	}

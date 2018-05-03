@@ -21,8 +21,9 @@ public class RunScript extends CommandGroup {
 			System.err.println("[ERROR] auto scripts file does not contain script `" + scriptName + "`.");
 			return;
 		}
-		
-		addParallel(new AutoLift(Robot.lift, "SWITCH"));
+
+		// addSequential(new AutoLift(Robot.lift, "GROUND"));
+		// addParallel(new AutoLift(Robot.lift, "SWITCH"));
 
 		outerloop: for (String[] cmd : script) {
 			String cmdName = cmd[0];
@@ -47,6 +48,7 @@ public class RunScript extends CommandGroup {
 				break;
 			case "switch":
 				addSequential(new EjectToSwitch(Double.parseDouble(cmdArgs)));
+				addParallel(new AutoLift(Robot.lift, "GROUND"));
 				break;
 			case "scale":
 				addSequential(new EjectToScale(Double.parseDouble(cmdArgs)));
@@ -58,6 +60,7 @@ public class RunScript extends CommandGroup {
 				addSequential(new WaitCommand(Double.parseDouble(cmdArgs)));
 				break;
 			case "intake":
+				addParallel(new ToggleIntake());
 				addParallel(new IntakeCube());
 				break;
 			case "jump":

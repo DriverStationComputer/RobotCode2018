@@ -15,8 +15,8 @@ import org.usfirst.frc.team199.Robot2018.autonomous.AutoUtils;
 import org.usfirst.frc.team199.Robot2018.autonomous.State;
 import org.usfirst.frc.team199.Robot2018.commands.Autonomous;
 import org.usfirst.frc.team199.Robot2018.commands.Autonomous.Strategy;
-import org.usfirst.frc.team199.Robot2018.commands.CloseIntake;
-import org.usfirst.frc.team199.Robot2018.commands.ShiftLowGear;
+import org.usfirst.frc.team199.Robot2018.commands.PIDMove;
+import org.usfirst.frc.team199.Robot2018.commands.Turn;
 import org.usfirst.frc.team199.Robot2018.subsystems.Climber;
 import org.usfirst.frc.team199.Robot2018.subsystems.ClimberAssist;
 import org.usfirst.frc.team199.Robot2018.subsystems.Drivetrain;
@@ -24,7 +24,6 @@ import org.usfirst.frc.team199.Robot2018.subsystems.IntakeEject;
 import org.usfirst.frc.team199.Robot2018.subsystems.Lift;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Preferences;
@@ -163,7 +162,11 @@ public class Robot extends IterativeRobot {
 
 		// auto position chooser
 		for (Autonomous.Position p : Autonomous.Position.values()) {
+			// if (p.getSDName().equals("Center") && posChooser.getSelected() == null) {
+			// posChooser.addDefault(p.getSDName(), p);
+			// } else {
 			posChooser.addObject(p.getSDName(), p);
+			// }
 		}
 		SmartDashboard.putData("Starting Position", posChooser);
 
@@ -171,7 +174,12 @@ public class Robot extends IterativeRobot {
 		for (String input : fmsPossibilities) {
 			SendableChooser<Strategy> chooser = new SendableChooser<Strategy>();
 			for (Strategy s : Strategy.values()) {
+				// if (s.getSDName().equals("Cross Auto Line") && chooser.getSelected() == null)
+				// {
+				// chooser.addDefault(s.getSDName(), s);
+				// } else {
 				chooser.addObject(s.getSDName(), s);
+				// }
 			}
 			SmartDashboard.putData(input, chooser);
 			stratChoosers.put(input, chooser);
@@ -197,7 +205,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledInit() {
 		dt.disableVelocityPIDs();
-		lift.setSetpoint(0);
+		// lift.setSetpoint(0);
 	}
 
 	@Override
@@ -212,23 +220,29 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		dt.resetAHRS();
-		AutoUtils.state = new State(0, 0, 0);
-		Scheduler.getInstance().add(new ShiftLowGear());
-		Scheduler.getInstance().add(new CloseIntake());
-		String fmsInput = DriverStation.getInstance().getGameSpecificMessage();
-		Autonomous.Position startPos = posChooser.getSelected();
-		double autoDelay = SmartDashboard.getNumber("Auto Delay", 0);
+		// dt.resetAHRS();
+		// AutoUtils.state = new State(0, 0, 0);
+		// Scheduler.getInstance().add(new ShiftLowGear());
+		// Scheduler.getInstance().add(new CloseIntake());
+		// String fmsInput = DriverStation.getInstance().getGameSpecificMessage();
+		// Autonomous.Position startPos = posChooser.getSelected();
+		// double autoDelay = SmartDashboard.getNumber("Auto Delay", 0);
+		//
+		// Map<String, Strategy> strategies = new HashMap<String, Strategy>();
+		// for (Map.Entry<String, SendableChooser<Strategy>> entry :
+		// stratChoosers.entrySet()) {
+		// String key = entry.getKey();
+		// SendableChooser<Strategy> chooser = entry.getValue();
+		// strategies.put(key, chooser.getSelected());
+		// // strategies.put(key, Strategy.SWITCH);
+		// }
+		//
+		// Scheduler.getInstance().add(new Autonomous(startPos, strategies, autoDelay,
+		// fmsInput, false));
+		// // auto.start();
 
-		Map<String, Strategy> strategies = new HashMap<String, Strategy>();
-		for (Map.Entry<String, SendableChooser<Strategy>> entry : stratChoosers.entrySet()) {
-			String key = entry.getKey();
-			SendableChooser<Strategy> chooser = entry.getValue();
-			strategies.put(key, chooser.getSelected());
-		}
-
-		Scheduler.getInstance().add(new Autonomous(startPos, strategies, autoDelay, fmsInput, false));
-		// auto.start();
+		Scheduler.getInstance().add(new PIDMove(24, dt, sd, rmap.distEncAvg));
+		Scheduler.getInstance().add(new Turn());
 	}
 
 	/**

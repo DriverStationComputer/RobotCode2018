@@ -2,7 +2,6 @@ package org.usfirst.frc.team199.Robot2018.subsystems;
 
 import org.usfirst.frc.team199.Robot2018.Robot;
 import org.usfirst.frc.team199.Robot2018.RobotMap;
-import org.usfirst.frc.team199.Robot2018.commands.DefaultIntake;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -40,7 +39,7 @@ public class IntakeEject extends Subsystem implements IntakeEjectInterface {
 	@Override
 	public void initDefaultCommand() {
 		// I don't want this on the manipulator joysticks during a match
-		setDefaultCommand(new DefaultIntake());
+		// setDefaultCommand(new DefaultIntake());
 	}
 
 	/**
